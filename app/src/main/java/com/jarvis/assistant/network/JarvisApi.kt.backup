@@ -1,0 +1,400 @@
+package com.jarvis.assistant.network
+
+import android.os.Handler
+import android.os.Looper
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.concurrent.Executors
+
+data class JarvisCommand(
+    val isCommand: Boolean,
+    val action: String?,
+    val parameters: Map<String, String>,
+    val text: String
+)
+
+data class JarvisResponse(
+    val ok: Boolean,
+    val answer: String,
+    val cached: Boolean,
+    val command: JarvisCommand?,
+    val evidenceCount: Int,
+    val error: String?
+)
+
+object JarvisApi {
+
+    @Volatile
+    var serverAddress: String =
+        "http://127.0.0.1:8787"
+
+    private val executor =
+        Executors.newCachedThreadPool()
+
+    private val mainHandler =
+        Handler(Looper.getMainLooper())
+
+    fun ask(
+        question: String,
+        language: String = "auto",
+        callback: (String) -> Unit
+    ) {
+        askDetailed(
+            question,
+            language
+        ) { response ->
+
+            callback(
+                if (response.ok) {
+                    response.answer
+                } else {
+                    "सर, ${
+                        response.error
+                            ?: "request failed"
+                    }"
+                }
+            )
+        }
+    }
+
+    fun askDetailed(
+        question: String,
+        language: String = "auto",
+        callback: (JarvisResponse) -> Unit
+    ) {
+
+        val text =
+            question.trim()
+
+        if (text.isEmpty()) {
+
+            postResponse(
+                JarvisResponse(
+                    ok = false,
+                    answer = "",
+                    cached = false,
+                    command = null,
+                    evidenceCount = 0,
+                    error =
+                        "मुझे कोई सवाल नहीं मिला।"
+                ),
+                callback
+            )
+
+            return
+        }
+
+        executor.execute {
+
+            var connection:
+                HttpURLConnection? = null
+
+            try {
+
+                val url =
+                    URL(
+                        "$serverAddress/ask"
+                    )
+
+                connection =
+                    url.openConnection()
+                        as HttpURLConnection
+
+                connection.requestMethod =
+                    "POST"
+
+                connection.connectTimeout =
+                    1500
+
+                connection.readTimeout =
+                    15000
+
+                connection.setRequestProperty(
+                    "Content-Type",
+                    "application/json; charset=UTF-8"
+                )
+
+                connection.setRequestProperty(
+                    "Accept",
+                    "application/json"
+                )
+
+                connection.doOutput = true
+                connection.useCaches = false
+
+                val request =
+                    JSONObject().apply {
+
+                        put(
+                            "text",
+                            text
+                        )
+
+                        put(
+                            "language",
+                            language
+                        )
+                    }
+
+                connection.outputStream.use {
+                    output ->
+
+                    output.write(
+                        request.toString()
+                            .toByteArray(
+                                Charsets.UTF_8
+                            )
+                    )
+                }
+
+                val code =
+                    connection.responseCode
+
+                val stream =
+                    if (code in 200..299) {
+                        connection.inputStream
+                    } else {
+                        connection.errorStream
+                    }
+
+                val raw =
+                    stream
+                        ?.bufferedReader()
+                        ?.use {
+                            it.readText()
+                        }
+                        ?: ""
+
+                if (raw.isBlank()) {
+
+                    postResponse(
+                        JarvisResponse(
+                            ok = false,
+                            answer = "",
+                            cached = false,
+                            command = null,
+                            evidenceCount = 0,
+                            error =
+                                "Central Brain ने खाली response दिया।"
+                        ),
+                        callback
+                    )
+
+                    return@execute
+                }
+
+                val json =
+                    JSONObject(raw)
+
+                val ok =
+                    json.optBoolean(
+                        "ok",
+                        false
+                    )
+
+                if (!ok) {
+
+                    postResponse(
+                        JarvisResponse(
+                            ok = false,
+                            answer = "",
+                            cached = false,
+                            command = null,
+                            evidenceCount = 0,
+                            error =
+                                json.optString(
+                                    "error",
+                                    "Unknown server error"
+                                )
+                        ),
+                        callback
+                    )
+
+                    return@execute
+                }
+
+                val commandJson =
+                    json.optJSONObject(
+                        "command"
+                    )
+
+                val command =
+                    commandJson?.let {
+
+                        val parameters =
+                            mutableMapOf<String, String>()
+
+                        val parameterJson =
+                            it.optJSONObject(
+                                "parameters"
+                            )
+
+                        if (
+                            parameterJson != null
+                        ) {
+
+                            val keys =
+                                parameterJson.keys()
+
+                            while (keys.hasNext()) {
+
+                                val key =
+                                    keys.next()
+
+                                val value =
+                                    parameterJson.optString(
+                                        key,
+                                        ""
+                                    )
+
+                                if (
+                                    value.isNotBlank()
+                                ) {
+
+                                    parameters[key] =
+                                        value
+                                }
+                            }
+                        }
+
+                        JarvisCommand(
+                            isCommand =
+                                it.optBoolean(
+                                    "is_command",
+                                    false
+                                ),
+
+                            action =
+                                it.optString(
+                                    "action",
+                                    ""
+                                ).ifBlank {
+                                    null
+                                },
+
+                            parameters =
+                                parameters,
+
+                            text =
+                                it.optString(
+                                    "text",
+                                    text
+                                )
+                        )
+                    }
+
+                val response =
+                    JarvisResponse(
+                        ok = true,
+
+                        answer =
+                            json.optString(
+                                "answer",
+                                ""
+                            ),
+
+                        cached =
+                            json.optBoolean(
+                                "cached",
+                                false
+                            ),
+
+                        command =
+                            command,
+
+                        evidenceCount =
+                            json.optInt(
+                                "evidence_count",
+                                0
+                            ),
+
+                        error = null
+                    )
+
+                postResponse(
+                    response,
+                    callback
+                )
+
+            } catch (_: Exception) {
+
+                postResponse(
+                    JarvisResponse(
+                        ok = false,
+                        answer = "",
+                        cached = false,
+                        command = null,
+                        evidenceCount = 0,
+                        error =
+                            "Central Brain से connection नहीं हो पाया।"
+                    ),
+                    callback
+                )
+
+            } finally {
+
+                connection?.disconnect()
+            }
+        }
+    }
+
+    fun health(
+        callback: (Boolean) -> Unit
+    ) {
+
+        executor.execute {
+
+            var connection:
+                HttpURLConnection? = null
+
+            try {
+
+                connection =
+                    URL(
+                        "$serverAddress/health"
+                    )
+                        .openConnection()
+                        as HttpURLConnection
+
+                connection.requestMethod =
+                    "GET"
+
+                connection.connectTimeout =
+                    1000
+
+                connection.readTimeout =
+                    1500
+
+                val code =
+                    connection.responseCode
+
+                mainHandler.post {
+                    callback(
+                        code in 200..299
+                    )
+                }
+
+            } catch (_: Exception) {
+
+                mainHandler.post {
+                    callback(false)
+                }
+
+            } finally {
+
+                connection?.disconnect()
+            }
+        }
+    }
+
+    private fun postResponse(
+        response: JarvisResponse,
+        callback: (JarvisResponse) -> Unit
+    ) {
+
+        mainHandler.post {
+            callback(response)
+        }
+    }
+}

@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "name": "JARVIS Authorized Device Policy",
+
+  "allowed_capabilities": [
+    "open_app",
+    "open_url",
+    "device_info",
+    "notifications",
+    "bluetooth",
+    "location",
+    "authorized_files",
+    "tts",
+    "vibration"
+  ],
+
+  "user_consent_required": [
+    "microphone",
+    "camera",
+    "screen_capture",
+    "accessibility"
+  ],
+
+  "blocked_capabilities": [
+    "payment",
+    "upi_payment",
+    "money_transfer",
+    "paytm_transaction",
+    "otp_access",
+    "password_access",
+    "credential_access",
+    "security_bypass",
+    "root_escalation",
+    "permission_bypass"
+  ],
+
+  "payment_keywords": [
+    "pay",
+    "payment",
+    "upi",
+    "paytm",
+    "send money",
+    "transfer money",
+    "पैसे भेजो",
+    "पेमेंट करो",
+    "यूपीआई",
+    "पेटीएम"
+  ],
+
+  "sensitive_keywords": [
+    "otp",
+    "password",
+    "पासवर्ड",
+    "ओटीपी"
+  ]
+}

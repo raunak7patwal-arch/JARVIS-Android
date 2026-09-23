@@ -1,0 +1,2 @@
+# JARVIS AI Core v1
+# Core version intentionally uses Python standard library only.

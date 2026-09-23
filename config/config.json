@@ -1,0 +1,7 @@
+{
+  "name": "JARVIS",
+  "version": "1.0",
+  "language": "hi-IN",
+  "voice_enabled": false,
+  "ai_provider": "none"
+}

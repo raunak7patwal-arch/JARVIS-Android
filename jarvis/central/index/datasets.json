@@ -1,0 +1,16 @@
+{
+  "project": "JARVIS Central Knowledge",
+  "purpose": "Large world-knowledge storage",
+  "datasets": {
+    "wikidata": {
+      "name": "Wikidata structured knowledge",
+      "type": "external",
+      "info": "https://dumps.wikimedia.org/other/wikidata/"
+    },
+    "wikimedia": {
+      "name": "Wikimedia public datasets",
+      "type": "external",
+      "info": "https://dumps.wikimedia.org/"
+    }
+  }
+}

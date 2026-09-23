@@ -1,0 +1,15 @@
+{
+  "name": "JARVIS",
+  "portable_format": "JARVIS-DATA",
+  "version": "1.0",
+  "portable_id": "f21de8e9701a49c09ab9ca09113aaab4",
+  "created_at": 1790173009,
+  "parent_portable_id": null,
+  "device_history": [],
+  "security": {
+    "api_keys_included": false,
+    "credentials_included": false,
+    "activity_log_included": true,
+    "memory_included": true
+  }
+}

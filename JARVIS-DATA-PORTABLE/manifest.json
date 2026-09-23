@@ -1,0 +1,84 @@
+{
+  "format": "JARVIS-DATA",
+  "version": "1.0",
+  "portable_id": "f21de8e9701a49c09ab9ca09113aaab4",
+  "created_at": 1790173009,
+  "files": {
+    "README.txt": {
+      "sha256": "6d1625500d011823805592f63026a3cf3c8bb2036d94c30e67093e346d55e571",
+      "size": 507
+    },
+    "DATA/DEVICE-LINEAGE.json": {
+      "sha256": "50271c91b12e2f43270f06714894978ef40022c1a30d442b2fd6dd67b550f551",
+      "size": 232
+    },
+    "DATA/MEMORY/memory.json": {
+      "sha256": "85e4ca03e9096b8be4c9fde78c2f493f0aafbac6ee9300d28c90c0783ec13a87",
+      "size": 248
+    },
+    "DATA/MEMORY/advanced_memory.json": {
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "size": 2
+    },
+    "DATA/ACTIVITY/activity.jsonl": {
+      "sha256": "c51f004edb7320c5547b8a633eaa16718b6373b91cb548e9c484abc349c8fcdc",
+      "size": 199
+    },
+    "DATA/ACTIVITY/README.txt": {
+      "sha256": "c237c381d61051d1c1e494a2ce16289582429677163fdb8f67603ff853a820f8",
+      "size": 290
+    },
+    "DATA/CONFIG/portable.json": {
+      "sha256": "8e5b57c32d29abee56a7ca8fea0f4708eb61490c453e20190011291a2446dd33",
+      "size": 364
+    },
+    "DATA/cache/fast_cache.py": {
+      "sha256": "2dcb7b8044425da385c84c0060c9e439b23c188f84aaf68a4b30407791a76523",
+      "size": 2339
+    },
+    "DATA/cache/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "DATA/cache/cache.json": {
+      "sha256": "89349a46117276287f91e180832e3f49ed9c28a74bef30248c297dfd6cb777a0",
+      "size": 505
+    },
+    "DATA/cache/knowledge.json": {
+      "sha256": "ddc97c7c95e95795155a3d02efc56a5227fd19504b67b9719873982bebb08a0f",
+      "size": 36923
+    },
+    "DATA/conversation/manager.py": {
+      "sha256": "0452349e0275cd7256942da94e97765c9d2a441f2d8286427f1c966d8dbb0712",
+      "size": 1706
+    },
+    "DATA/conversation/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "DATA/conversation/context.py": {
+      "sha256": "58f46c74b250d21db05e05c9772494a1fa98be4aea33373839b531d26558ce16",
+      "size": 375
+    },
+    "DATA/conversation/__pycache__/__init__.cpython-314.pyc": {
+      "sha256": "01e9f783f2a5afbad6ca0b0099090509d5ae8b8b379c9ce63f5fc208d6f5022b",
+      "size": 186
+    },
+    "DATA/conversation/__pycache__/manager.cpython-314.pyc": {
+      "sha256": "3dfb094cfdcbb9904403fc7639421ba275effe3f0cf36400c751883fe5974617",
+      "size": 4033
+    },
+    "DATA/conversation/__pycache__/context.cpython-314.pyc": {
+      "sha256": "496df3fe18f7b5414c736c22f7a49a603c0246fce454c960af53b0f0128fe736",
+      "size": 1303
+    },
+    "DATA/cache/__pycache__/__init__.cpython-314.pyc": {
+      "sha256": "fe3f44f0eee6e110ceb462fb211c409bd1090f6d0fcf2b6bf65f2b7dd108d222",
+      "size": 179
+    },
+    "DATA/cache/__pycache__/fast_cache.cpython-314.pyc": {
+      "sha256": "cba6dbd672f085e98b957dbc3d7d143a2fcb4655e7c4eb52b5e6df240b8aac40",
+      "size": 4633
+    }
+  }
+}
